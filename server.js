@@ -12,11 +12,15 @@ app.use(express.static('public'));
 io.on('connection', (socket) => {
     console.log('A user connected');
 
+    // 클라이언트에서 메시지 수신
     socket.on('message', (data) => {
         console.log('Received message:', data);
-        // 필요 시 데이터를 Max MSP로 보낼 수 있음
+
+        // 모든 클라이언트로 메시지 브로드캐스트
+        io.emit('message', data);
     });
 
+    // 클라이언트 연결 해제
     socket.on('disconnect', () => {
         console.log('A user disconnected');
     });
