@@ -1,0 +1,85 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Developer UI</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            height: 100vh;
+            margin: 0;
+            background-color: #f4f4f9;
+            color: #333;
+        }
+        h1 {
+            margin-bottom: 20px;
+        }
+        .status {
+            margin-bottom: 20px;
+        }
+        .button-container {
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+        }
+        button {
+            padding: 10px 20px;
+            font-size: 16px;
+            border: none;
+            border-radius: 5px;
+            background-color: #007BFF;
+            color: white;
+            cursor: pointer;
+            transition: background-color 0.2s;
+        }
+        button:hover {
+            background-color: #0056b3;
+        }
+        button:active {
+            transform: scale(0.95);
+        }
+    </style>
+</head>
+<body>
+    <h1>Developer Control Panel</h1>
+    <div class="status">
+        <strong>Connected Clients:</strong> <span id="client-count">0</span>
+    </div>
+    <div class="button-container">
+        <button id="clear-button">Clear</button>
+        <button id="audio-toggle-button">Audio ON / OFF</button>
+        <button id="ui-toggle-button">UI Update ON / OFF</button>
+    </div>
+
+    <script src="/socket.io/socket.io.js"></script>
+    <script>
+        const socket = io();
+
+        // 클라이언트 수 업데이트
+        socket.on('updateClientCount', (count) => {
+            document.getElementById('client-count').textContent = count;
+        });
+
+        // 버튼 클릭 이벤트
+        document.getElementById('clear-button').addEventListener('click', () => {
+            socket.emit('message', 'DEV_CLEAR');
+            console.log('Sent: DEV_CLEAR');
+        });
+
+        document.getElementById('audio-toggle-button').addEventListener('click', () => {
+            socket.emit('message', 'DEV_AUDIO_TOGGLE');
+            console.log('Sent: DEV_AUDIO_TOGGLE');
+        });
+
+        document.getElementById('ui-toggle-button').addEventListener('click', () => {
+            socket.emit('message', 'DEV_UI_TOGGLE');
+            console.log('Sent: DEV_UI_TOGGLE');
+        });
+    </script>
+</body>
+</html>
