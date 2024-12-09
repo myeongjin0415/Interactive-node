@@ -67,18 +67,18 @@
 
         // 버튼 클릭 이벤트
         document.getElementById('clear-button').addEventListener('click', () => {
-            socket.emit('message', 'DEV_CLEAR');
-            console.log('Sent: DEV_CLEAR');
+            socket.emit('message', 'DEV CLEAR');
+            console.log('Sent: DEV CLEAR');
         });
 
         document.getElementById('audio-toggle-button').addEventListener('click', () => {
-            socket.emit('message', 'DEV_AUDIO_TOGGLE');
-            console.log('Sent: DEV_AUDIO_TOGGLE');
+            socket.emit('message', 'DEV AUDIO TOGGLE');
+            console.log('Sent: DEV AUDIO TOGGLE');
         });
 
         document.getElementById('ui-toggle-button').addEventListener('click', () => {
-            socket.emit('message', 'DEV_UI_TOGGLE');
-            console.log('Sent: DEV_UI_TOGGLE');
+            socket.emit('message', 'DEV UI TOGGLE');
+            console.log('Sent: DEV UI TOGGLE');
         });
     </script>
 </body>
