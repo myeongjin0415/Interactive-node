@@ -49,11 +49,13 @@ io.on('connection', (socket) => {
             console.log('Unknown client type');
         }
 
-        // 클라이언트 수 업데이트
-        io.emit('updateClientCount', {
-            max: maxClients.length,
-            browser: browserClients.length,
-            developer: devClients.length,
+        // 클라이언트 수 업데이트 (개발자 클라이언트에게만 전송)
+        devClients.forEach((devSocket) => {
+            devSocket.emit('updateClientCount', {
+                max: maxClients.length,
+                browser: browserClients.length,
+                developer: devClients.length,
+            });
         });
     });
 
@@ -63,7 +65,7 @@ io.on('connection', (socket) => {
 
         // 개발자 전용 메시지 처리
         if (socket.type === 'developer') {
-            // Max 클라이언트로 개발자 메시지 전달
+            // 개발자 메시지를 Max 클라이언트에게 전달
             maxClients.forEach((maxSocket) => {
                 maxSocket.emit('message', data);
             });
@@ -71,7 +73,7 @@ io.on('connection', (socket) => {
 
         // 브라우저 클라이언트 메시지 처리
         if (socket.type === 'browser') {
-            // Max 클라이언트로 브라우저 메시지 전달
+            // 브라우저 메시지를 Max 클라이언트에게 전달
             maxClients.forEach((maxSocket) => {
                 maxSocket.emit('message', data);
             });
@@ -91,11 +93,13 @@ io.on('connection', (socket) => {
             devClients = devClients.filter((devSocket) => devSocket !== socket);
         }
 
-        // 클라이언트 수 업데이트
-        io.emit('updateClientCount', {
-            max: maxClients.length,
-            browser: browserClients.length,
-            developer: devClients.length,
+        // 클라이언트 수 업데이트 (개발자 클라이언트에게만 전송)
+        devClients.forEach((devSocket) => {
+            devSocket.emit('updateClientCount', {
+                max: maxClients.length,
+                browser: browserClients.length,
+                developer: devClients.length,
+            });
         });
     });
 });
