@@ -1,12 +1,22 @@
 const express = require('express');
 const http = require('http');
 const { Server } = require('socket.io');
+const path = require('path');
 const app = express();
 const server = http.createServer(app);
 const io = new Server(server);
 
 // 정적 파일 제공
 app.use(express.static('public'));
+
+// 경로별로 HTML 파일 제공
+app.get('/', (req, res) => {
+    res.sendFile(path.join(__dirname, 'index.html')); // 기존 인터페이스
+});
+
+app.get('/piano', (req, res) => {
+    res.sendFile(path.join(__dirname, 'piano.html')); // 피아노 인터페이스
+});
 
 // 클라이언트 관리
 let maxClients = []; // 맥스 패치 클라이언트 목록
@@ -46,7 +56,6 @@ io.on('connection', (socket) => {
     // 클라이언트 연결 해제 처리
     socket.on('disconnect', () => {
         console.log('A user disconnected');
-        // 연결 해제 시 목록에서 제거
         if (socket.type === 'max') {
             maxClients = maxClients.filter((maxSocket) => maxSocket !== socket);
         } else if (socket.type === 'browser') {
