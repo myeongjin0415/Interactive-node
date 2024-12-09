@@ -60,9 +60,16 @@
     <script>
         const socket = io();
 
+        // 개발자 클라이언트 식별
+        socket.on('connect', () => {
+            console.log('Connected to server as Developer');
+            socket.emit('identify', 'developer'); // 개발자 클라이언트 식별 메시지 전송
+        });
+
         // 클라이언트 수 업데이트
-        socket.on('updateClientCount', (count) => {
-            document.getElementById('client-count').textContent = count;
+        socket.on('updateClientCount', (counts) => {
+            const { max, browser, developer } = counts;
+            document.getElementById('client-count').textContent = `Max: ${max}, Browser: ${browser}, Developer: ${developer}`;
         });
 
         // 버튼 클릭 이벤트
