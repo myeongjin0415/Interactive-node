@@ -1,0 +1,29 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Interactive Server</title>
+</head>
+<body>
+    <h1>Interactive Installation</h1>
+    <input id="message" placeholder="Enter your message" />
+    <button onclick="sendMessage()">Send</button>
+
+    <script src="/socket.io/socket.io.js"></script>
+    <script>
+        const socket = io();
+
+        socket.on('connect', () => {
+            console.log('Connected to server');
+            socket.emit('identify', 'browser'); // 클라이언트 식별
+        });
+
+        function sendMessage() {
+            const message = document.getElementById('message').value;
+            socket.emit('message', message); // 메시지 전송
+        }
+
+    </script>
+</body>
+</html>
