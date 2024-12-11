@@ -19,9 +19,9 @@
             height: 200px;
             margin: 2px;
             display: inline-block;
-            background-color: white;
             border: 1px solid black;
             box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
+            position: relative;
             transition: transform 0.1s ease, box-shadow 0.1s ease;
         }
         .key.black {
@@ -29,10 +29,17 @@
             height: 120px;
             margin-left: -15px;
             margin-right: -15px;
-            background-color: black;
             position: relative;
             z-index: 1;
             transition: transform 0.1s ease, box-shadow 0.1s ease;
+        }
+        .key span {
+            position: absolute;
+            bottom: 10px;
+            left: 50%;
+            transform: translateX(-50%);
+            font-size: 12px;
+            font-weight: bold;
         }
         .keys {
             display: flex;
@@ -51,18 +58,18 @@
 <body>
     <h1>Interactive Piano</h1>
     <div class="keys">
-        <div class="key" data-note="C"></div>
-        <div class="key black" data-note="C#"></div>
-        <div class="key" data-note="D"></div>
-        <div class="key black" data-note="D#"></div>
-        <div class="key" data-note="E"></div>
-        <div class="key" data-note="F"></div>
-        <div class="key black" data-note="F#"></div>
-        <div class="key" data-note="G"></div>
-        <div class="key black" data-note="G#"></div>
-        <div class="key" data-note="A"></div>
-        <div class="key black" data-note="A#"></div>
-        <div class="key" data-note="B"></div>
+        <div class="key" data-note="C"><span>C</span></div>
+        <div class="key black" data-note="C#"><span>C#</span></div>
+        <div class="key" data-note="D"><span>D</span></div>
+        <div class="key black" data-note="D#"><span>D#</span></div>
+        <div class="key" data-note="E"><span>E</span></div>
+        <div class="key" data-note="F"><span>F</span></div>
+        <div class="key black" data-note="F#"><span>F#</span></div>
+        <div class="key" data-note="G"><span>G</span></div>
+        <div class="key black" data-note="G#"><span>G#</span></div>
+        <div class="key" data-note="A"><span>A</span></div>
+        <div class="key black" data-note="A#"><span>A#</span></div>
+        <div class="key" data-note="B"><span>B</span></div>
     </div>
 
     <script src="/socket.io/socket.io.js"></script>
@@ -74,12 +81,33 @@
             socket.emit('identify', 'browser'); // 클라이언트 식별
         });
 
+        const noteColors = {
+            "C":  [1.0, 0.0, 0.0],
+            "C#": [1.0, 0.5, 0.0],
+            "D":  [1.0, 1.0, 0.0],
+            "D#": [0.5, 1.0, 0.0],
+            "E":  [0.0, 1.0, 0.0],
+            "F":  [0.0, 1.0, 0.5],
+            "F#": [0.0, 1.0, 1.0],
+            "G":  [0.0, 0.5, 1.0],
+            "G#": [0.0, 0.0, 1.0],
+            "A":  [0.5, 0.0, 1.0],
+            "A#": [1.0, 0.0, 1.0],
+            "B":  [1.0, 0.0, 0.5]
+        };
+
         const keys = document.querySelectorAll('.key');
         keys.forEach(key => {
+            const note = key.dataset.note;
+            if (noteColors[note]) {
+                const [r, g, b] = noteColors[note];
+                const color = `rgb(${r * 255}, ${g * 255}, ${b * 255})`;
+                key.querySelector('span').style.color = color;
+            }
+
             key.addEventListener('click', () => {
-                const note = key.dataset.note;
                 socket.emit('message', note); // 노트 전송
-                console.log(Played: ${note});
+                console.log(`Played: ${note}`);
             });
         });
     </script>
