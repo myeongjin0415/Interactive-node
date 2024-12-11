@@ -22,10 +22,11 @@
         .status {
             margin-bottom: 20px;
         }
-        .button-container {
+        .button-container, .input-container, .dropdown-container {
             display: flex;
             flex-direction: column;
             gap: 10px;
+            margin-bottom: 20px;
         }
         button {
             padding: 10px 20px;
@@ -43,6 +44,18 @@
         button:active {
             transform: scale(0.95);
         }
+        input {
+            padding: 8px;
+            font-size: 16px;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+        }
+        select {
+            padding: 8px;
+            font-size: 16px;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+        }
     </style>
 </head>
 <body>
@@ -54,25 +67,52 @@
         <button id="clear-button">Clear</button>
         <button id="audio-toggle-button">Audio ON / OFF</button>
         <button id="ui-toggle-button">UI Update ON / OFF</button>
+        <button id="ambi-toggle-button">Ambient ON / OFF</button>
+        <button id="double-speed-button">2x Speed ON / OFF</button>
+        <button id="hide-ui-button">Hide UI ON / OFF</button>
+    </div>
+    <div class="input-container">
+        <input type="text" id="limit-input" placeholder="Enter limit value" />
+        <button id="limit-button">Send Limit</button>
+    </div>
+    <div class="dropdown-container">
+        <label for="scale-dropdown"><strong>Scale Filter:</strong></label>
+        <select id="scale-dropdown">
+            <option value="Major">Major</option>
+            <option value="Minor">Minor</option>
+            <option value="Dorian">Dorian</option>
+            <option value="Phrygian">Phrygian</option>
+            <option value="Lydian">Lydian</option>
+            <option value="Mixolydian">Mixolydian</option>
+            <option value="Locrian">Locrian</option>
+            <option value="Harmonic Minor">Harmonic Minor</option>
+            <option value="Melodic Minor">Melodic Minor</option>
+            <option value="Pentatonic">Pentatonic</option>
+            <option value="Blues">Blues</option>
+            <option value="Chromatic">Chromatic</option>
+            <option value="Whole Tone">Whole Tone</option>
+            <option value="Octatonic">Octatonic</option>
+        </select>
+        <button id="scale-button">Set Scale</button>
     </div>
 
     <script src="/socket.io/socket.io.js"></script>
     <script>
         const socket = io();
 
-        // 개발자 클라이언트 식별
+        // Identify developer client
         socket.on('connect', () => {
             console.log('Connected to server as Developer');
-            socket.emit('identify', 'developer'); // 개발자 클라이언트 식별 메시지 전송
+            socket.emit('identify', 'developer');
         });
 
-        // 클라이언트 수 업데이트
+        // Update client count
         socket.on('updateClientCount', (counts) => {
             const { max, browser, developer } = counts;
             document.getElementById('client-count').textContent = `Max: ${max}, Browser: ${browser}, Developer: ${developer}`;
         });
 
-        // 버튼 클릭 이벤트
+        // Existing buttons
         document.getElementById('clear-button').addEventListener('click', () => {
             socket.emit('message', 'DEV CLEAR');
             console.log('Sent: DEV CLEAR');
@@ -86,6 +126,38 @@
         document.getElementById('ui-toggle-button').addEventListener('click', () => {
             socket.emit('message', 'DEV UI TOGGLE');
             console.log('Sent: DEV UI TOGGLE');
+        });
+
+        // New buttons
+        document.getElementById('ambi-toggle-button').addEventListener('click', () => {
+            socket.emit('message', 'DEV AMBI TOGGLE');
+            console.log('Sent: DEV AMBI TOGGLE');
+        });
+
+        document.getElementById('double-speed-button').addEventListener('click', () => {
+            socket.emit('message', 'DEV DUBBLE');
+            console.log('Sent: DEV DUBBLE');
+        });
+
+        document.getElementById('hide-ui-button').addEventListener('click', () => {
+            socket.emit('message', 'DEV HIDE TOGGLE');
+            console.log('Sent: DEV HIDE TOGGLE');
+        });
+
+        // Limit input
+        document.getElementById('limit-button').addEventListener('click', () => {
+            const limitValue = document.getElementById('limit-input').value.trim();
+            if (limitValue) {
+                socket.emit('message', `DEV LIMIT ${limitValue}`);
+                console.log(`Sent: DEV LIMIT ${limitValue}`);
+            }
+        });
+
+        // Scale filter dropdown
+        document.getElementById('scale-button').addEventListener('click', () => {
+            const selectedScale = document.getElementById('scale-dropdown').value;
+            socket.emit('message', `DEV SCALE ${selectedScale}`);
+            console.log(`Sent: DEV SCALE ${selectedScale}`);
         });
     </script>
 </body>
